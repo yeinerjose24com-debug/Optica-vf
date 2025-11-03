@@ -103,15 +103,24 @@
     .btn.ghost { background:transparent; border:2px solid var(--oro); color:var(--negro); }
     .volver { margin-top:18px; color:#666; cursor:pointer; text-decoration:underline; background:none; border:none; font-weight:600; }
 
+    /* Overlay para el carrito en móvil */
+    .carrito-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 110;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .3s, visibility .3s;
+    }
+    .carrito-overlay.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
     /* Carrito lateral */
     .carrito-panel {
-      position: fixed;
-      right: -420px;
-      top: 0;
-      width: 380px;
-      height: 100vh;
-      background: #fff;
-      box-shadow: -8px 0 30px rgba(0,0,0,0.15);
+      position:fixed; top:0; right:-420px; width:380px; height:100vh; background:#fff; box-shadow:-8px 0 30px rgba(0,0,0,0.15);
       transition: right .36s cubic-bezier(.2,.9,.2,1);
       z-index:120;
       display:flex;
@@ -153,14 +162,15 @@
       .coleccion-nueva { flex-direction:column; align-items:center; padding:34px 14px; }
       .coleccion-nueva .foto { width:92%; height:420px; }
       .decoracion { display:none; }
-      .carrito-panel {
-        width: 100%;
-        right: -100%; /* Corregido: Ocultar completamente en móvil */
-      }
+      .carrito-panel { width: 90%; max-width: 380px; right: -100%; }
       .detalle { grid-template-columns:1fr; gap: 20px; }
       .detalle .galeria {
         order: -1; /* Mueve la galería arriba de la info en móvil */
         height: 150px; /* Altura más pequeña para las miniaturas */
+      }
+      .destacados {
+        flex-direction: column; /* Apila los destacados en móvil */
+        align-items: center;
       }
     }
   </style>
@@ -171,7 +181,7 @@
   <!-- HEADER -->
   <header>
     <div class="brand">
-      <img src="static/logo-1.jpg" class="logo" alt="VF Optical">
+      <img src="static/logo-1.png" class="logo" alt="VF Optical">
       <div style="color:var(--oro); font-weight:700; letter-spacing:2px;">VF OPTICAL</div>
     </div>
 
@@ -464,6 +474,9 @@
   </div>
 </section>
 
+  <!-- OVERLAY PARA CARRITO EN MÓVIL -->
+  <div id="carrito-overlay" class="carrito-overlay"></div>
+
   <!-- CARRITO LATERAL -->
   <aside id="carrito-panel" class="carrito-panel" aria-hidden="true">
     <div class="carrito-header">
@@ -675,6 +688,7 @@
      * CARRITO
      **********************/
     const carritoPanel = document.getElementById('carrito-panel');
+    const carritoOverlay = document.getElementById('carrito-overlay');
     const carritoItemsEl = document.getElementById('carrito-items');
     const carritoTotalValorEl = document.getElementById('carrito-total-valor');
     const cartIcon = document.getElementById('cart-icon');
@@ -685,10 +699,18 @@
     cartIcon.addEventListener('click', () => {
       carritoPanel.classList.toggle('open');
       carritoPanel.setAttribute('aria-hidden', carritoPanel.classList.contains('open') ? 'false' : 'true');
+      if (carritoOverlay) carritoOverlay.classList.toggle('visible');
     });
     document.getElementById('close-carrito').addEventListener('click', () => {
       carritoPanel.classList.remove('open');
+      if (carritoOverlay) carritoOverlay.classList.remove('visible');
     });
+    // Cerrar también al hacer clic en el overlay
+    if (carritoOverlay) {
+      carritoOverlay.addEventListener('click', () => {
+        document.getElementById('close-carrito').click();
+      });
+    }
 
     // agregar al carrito
     function agregarAlCarrito(item) {
@@ -696,6 +718,7 @@
       renderCarrito();
       // abrir carrito automáticamente
       carritoPanel.classList.add('open');
+      if (carritoOverlay) carritoOverlay.classList.add('visible');
       cartCountBadge.style.display = 'block';
       cartCountBadge.textContent = carrito.length;
     }
@@ -756,6 +779,7 @@
       carrito.length = 0;
       renderCarrito();
       carritoPanel.classList.remove('open');
+      if (carritoOverlay) carritoOverlay.classList.remove('visible');
     });
 
     // helper de seguridad XSS muy simple para nombres
@@ -799,6 +823,7 @@
         if (catalogo) catalogo.style.display = 'grid';
         cerrarZoom();
         carritoPanel.classList.remove('open');
+        if (carritoOverlay) carritoOverlay.classList.remove('visible');
       }
     });
 
