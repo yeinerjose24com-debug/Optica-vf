@@ -24,7 +24,7 @@
     header nav.top a { color:#fff; text-decoration:none; font-size:14px; letter-spacing:0.6px; padding:8px 10px; border-radius:8px; }
     header nav.top a:hover { background: rgba(255,255,255,0.04); }
     .header-icons { display:flex; align-items:center; gap:12px; }
-    .icon-btn { width:40px; height:40px; border-radius:50%; background:var(--negro); border:2px solid rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center; color:var(--oro); font-size:18px; cursor:pointer; position:relative; }
+    .icon-btn { width:40px; height:40px; border-radius:50%; background:var(--negro); border:2px solid rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center; color:var(--oro); font-size:18px; cursor:pointer; position:relative; transition: background .2s; }
     .icon-badge { position:absolute; top:-6px; right:-6px; background:var(--oro); color:#000; font-weight:700; font-size:12px; padding:2px 6px; border-radius:999px; }
 
     /* Decoracion lateral (moda1) */
@@ -45,7 +45,7 @@
     .coleccion-nueva p { color:#555; line-height:1.5; }
 
     /* Destacados (nueva sección) */
-    .destacados { max-width:1200px; margin:30px auto; padding:20px; display:flex; gap:18px; justify-content:center; }
+    .destacados { max-width:1400px; margin:40px auto; padding:20px; display:flex; gap:18px; justify-content:center; }
   .destacado-card { background:var(--card-bg); border-radius:12px; padding:12px; width:340px; box-shadow:0 8px 20px rgba(0,0,0,0.06); text-align:center; cursor:pointer; }
     .destacado-card img { width:100%; height:250px; object-fit:cover; border-radius:8px; margin-bottom:12px; }
     .destacado-card.highlight { box-shadow: 0 18px 40px rgba(212,175,55,0.18), 0 6px 24px rgba(0,0,0,0.08); transform: translateY(-6px); border: 2px solid var(--oro); }
@@ -103,24 +103,15 @@
     .btn.ghost { background:transparent; border:2px solid var(--oro); color:var(--negro); }
     .volver { margin-top:18px; color:#666; cursor:pointer; text-decoration:underline; background:none; border:none; font-weight:600; }
 
-    /* Overlay para el carrito en móvil */
-    .carrito-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.4);
-      z-index: 110;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity .3s, visibility .3s;
-    }
-    .carrito-overlay.visible {
-      opacity: 1;
-      visibility: visible;
-    }
-
     /* Carrito lateral */
     .carrito-panel {
-      position:fixed; top:0; right:-420px; width:380px; height:100vh; background:#fff; box-shadow:-8px 0 30px rgba(0,0,0,0.15);
+      position: fixed;
+      right: -420px;
+      top: 0;
+      width: 380px;
+      height: 100vh;
+      background: #fff;
+      box-shadow: -8px 0 30px rgba(0,0,0,0.15);
       transition: right .36s cubic-bezier(.2,.9,.2,1);
       z-index:120;
       display:flex;
@@ -155,6 +146,20 @@
       width: 24px;
       height: 24px;
     }
+    /* Barra de búsqueda */
+    .search-bar { position: fixed; top: -100px; left: 0; right: 0; z-index: 200; background: var(--negro); padding: 12px 20px; display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); transition: top 0.3s ease-out; }
+    .search-bar.visible { top: 0; }
+    .search-bar input { flex-grow: 1; background: #222; border: 1px solid #444; color: #fff; padding: 10px 14px; border-radius: 8px; font-size: 16px; }
+    .search-bar input:focus { outline: none; border-color: var(--oro); }
+    .search-bar .close-search { font-size: 24px; color: #fff; cursor: pointer; background: none; border: none; }
+
+    /* Nuevos estilos para detalles técnicos */
+    .specs-tecnicas { margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
+    .specs-tecnicas h4 { margin-bottom: 12px; font-size: 16px; color: #333; }
+    .spec-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 14px; }
+    .spec-item svg { width: 20px; height: 20px; fill: var(--oro); flex-shrink: 0; }
+    .spec-item .label { font-weight: 600; color: #111; min-width: 150px; }
+    .spec-item .value { color: #555; }
     /* Misc */
     .hidden { display:none !important; }
     @media (max-width:1100px) {
@@ -162,20 +167,14 @@
       .coleccion-nueva { flex-direction:column; align-items:center; padding:34px 14px; }
       .coleccion-nueva .foto { width:92%; height:420px; }
       .decoracion { display:none; }
-      .carrito-panel { width: 90%; max-width: 380px; right: -100%; }
+      .carrito-panel {
+        width: 100%;
+        right: -100%; /* Corregido: Ocultar completamente en móvil */
+      }
       .detalle { grid-template-columns:1fr; gap: 20px; }
       .detalle .galeria {
         order: -1; /* Mueve la galería arriba de la info en móvil */
         height: 150px; /* Altura más pequeña para las miniaturas */
-      }
-      .destacados {
-        flex-direction: column; /* Apila los destacados en móvil */
-        align-items: center;
-      }
-      /* Corrección para la vista de detalle en móvil */
-      .detalle .info {
-        display: flex;
-        flex-direction: column;
       }
     }
   </style>
@@ -199,13 +198,19 @@
     </nav>
 
     <div class="header-icons">
-      <div class="icon-btn" title="Buscar">🔍</div>
+      <div id="search-icon" class="icon-btn" title="Buscar">🔍</div>
       <div id="cart-icon" class="icon-btn" title="Ver carrito" aria-label="Ver carrito">
         🛒
         <div id="cart-count" class="icon-badge" style="display:none;">0</div>
       </div>
     </div>
   </header>
+
+  <!-- BARRA DE BÚSQUEDA -->
+  <div id="search-bar" class="search-bar">
+    <input type="text" id="search-input" placeholder="Buscar por nombre o categoría..." aria-label="Buscar productos">
+    <button id="close-search" class="close-search" aria-label="Cerrar búsqueda">&times;</button>
+  </div>
 
   <!-- HERO -->
   <section class="hero" aria-hidden="false">
@@ -226,9 +231,9 @@
       <div style="margin-top:14px;">
         <strong style="display:block;margin-bottom:8px;color:#222;">Ir a destacados:</strong>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <a href="#dest-1" style="text-decoration:none;padding:8px 12px;border-radius:8px;border:1px solid var(--oro);color:var(--negro);background:#fff;font-weight:700;">Gafa Aurora</a>
+          <a href="#dest-1" style="text-decoration:none;padding:8px 12px;border-radius:8px;border:1px solid var(--oro);color:var(--negro);background:#fff;font-weight:700;">Gafa Premium</a>
           <a href="#dest-2" style="text-decoration:none;padding:8px 12px;border-radius:8px;border:1px solid var(--oro);color:var(--negro);background:#fff;font-weight:700;">Reloj Clásico</a>
-          <a href="#dest-3" style="text-decoration:none;padding:8px 12px;border-radius:8px;border:1px solid var(--oro);color:var(--negro);background:#fff;font-weight:700;">Vintage Sol</a>
+          <a href="#dest-3" style="text-decoration:none;padding:8px 12px;border-radius:8px;border:1px solid var(--oro);color:var(--negro);background:#fff;font-weight:700;">Vintage Gold</a>
         </div>
       </div>
     </div>
@@ -237,8 +242,8 @@
   <!-- DESTACADOS -->
   <section id="destacados" class="destacados" aria-label="Productos destacados">
     <div id="dest-1" class="destacado-card">
-      <img src="static/producto7.avif" alt="Destacado 1">
-      <h4 style="margin-top:10px;">Gafa Aurora</h4>
+      <img src="static/producto8.avif" alt="Destacado 1">
+      <h4 style="margin-top:10px;">Gafa Premium</h4>
       <p style="color:var(--oro); font-weight:700;">$150.000</p>
     </div>
     <div id="dest-2" class="destacado-card">
@@ -248,7 +253,7 @@
     </div>
     <div id="dest-3" class="destacado-card">
       <img src="static/producto9.avif" alt="Destacado 3">
-      <h4 style="margin-top:10px;">Vintage Sol</h4>
+      <h4 style="margin-top:10px;">Vintage Gold</h4>
       <p style="color:var(--oro); font-weight:700;">$180.000</p>
     </div>
   </section>
@@ -414,6 +419,18 @@
         <div><strong>Disponibilidad:</strong> En tienda y online</div>
       </div>
       <p>Gafa premium de la colección Aurora. Su estructura metálica con tonos dorados ofrece un toque elegante con lentes degradados en azul para un look sofisticado.</p>
+      
+      <div class="specs-tecnicas">
+        <h4>Especificaciones Técnicas</h4>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M20.41 4.94l-1.35-1.35a4.01 4.01 0 00-5.66 0L4 12.59V17h4.41l8.94-8.94a4.01 4.01 0 002.06-5.12zM6 15v-2.59l7-7L15.59 8 8.59 15H6z"></path></svg><span class="label">Código de modelo:</span> <span class="value">RB2140 6773R5 50-22</span></div>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path></svg><span class="label">Forma:</span> <span class="value">Cuadrada</span></div>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-1.22-1.38-2.02-3.11-2.02-5.04 0-3.86 3.14-7 7-7 .92 0 1.76.18 2.52.48.6.23 1.28-.11 1.51-.71.23-.61-.11-1.28-.71-1.51C16.33 3.24 14.23 3 12 3z"></path></svg><span class="label">Color montura:</span> <span class="value">Pulido Gris Traslúcido</span></div>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M20.5 6.5c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5zM3.5 11.5c1.38 0 2.5-1.12 2.5-2.5S4.88 6.5 3.5 6.5 1 7.62 1 9s1.12 2.5 2.5 2.5zM20.5 4c2.48 0 4.5 2.02 4.5 4.5s-2.02 4.5-4.5 4.5-4.5-2.02-4.5-4.5S18.02 4 20.5 4zM3.5 4C1.02 4-1 6.02-1 8.5S1.02 13 3.5 13s4.5-2.02 4.5-4.5S5.98 4 3.5 4zM12 16c-3.31 0-6 2.69-6 6h12c0-3.31-2.69-6-6-6z"></path></svg><span class="label">Material:</span> <span class="value">Acetato</span></div>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg><span class="label">Color cristales:</span> <span class="value">Azul (Color Sólido)</span></div>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M22 8v10c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V8c0-1.86 1.28-3.41 3-3.86V2h3v2h8V2h3v2.14c1.72.45 3 2 3 3.86zM4 18h16V9.99c0-.01 0-.01 0 0H4v8.01z"></path></svg><span class="label">Calibre:</span> <span class="value">50 22mm</span></div>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path></svg><span class="label">Geofit:</span> <span class="value">Ajuste de puente alto</span></div>
+      </div>
+
       <div style="margin-top:10px;">
         <button class="btn primary" onclick="agregarAlCarrito({nombre:'Colección Aurora',precioText:'$210.000',precioVal:210000,img:'static/producto7.1.avif'})">Añadir al carrito</button>
         <button class="btn ghost" onclick="alert('Compra inmediata de Aurora')">Comprar ahora</button>
@@ -442,6 +459,18 @@
         <div><strong>Disponibilidad:</strong> Online</div>
       </div>
       <p>Diseño moderno con montura en negro mate y lentes polarizados. Ideal para quienes buscan elegancia con protección total.</p>
+
+      <div class="specs-tecnicas">
+        <h4>Especificaciones Técnicas</h4>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M20.41 4.94l-1.35-1.35a4.01 4.01 0 00-5.66 0L4 12.59V17h4.41l8.94-8.94a4.01 4.01 0 002.06-5.12zM6 15v-2.59l7-7L15.59 8 8.59 15H6z"></path></svg><span class="label">Código de modelo:</span> <span class="value">NB3050 1001/T3 52-20</span></div>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path></svg><span class="label">Forma:</span> <span class="value">Rectangular</span></div>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-1.22-1.38-2.02-3.11-2.02-5.04 0-3.86 3.14-7 7-7 .92 0 1.76.18 2.52.48.6.23 1.28-.11 1.51-.71.23-.61-.11-1.28-.71-1.51C16.33 3.24 14.23 3 12 3z"></path></svg><span class="label">Color montura:</span> <span class="value">Negro Mate</span></div>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M20.5 6.5c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5zM3.5 11.5c1.38 0 2.5-1.12 2.5-2.5S4.88 6.5 3.5 6.5 1 7.62 1 9s1.12 2.5 2.5 2.5zM20.5 4c2.48 0 4.5 2.02 4.5 4.5s-2.02 4.5-4.5 4.5-4.5-2.02-4.5-4.5S18.02 4 20.5 4zM3.5 4C1.02 4-1 6.02-1 8.5S1.02 13 3.5 13s4.5-2.02 4.5-4.5S5.98 4 3.5 4zM12 16c-3.31 0-6 2.69-6 6h12c0-3.31-2.69-6-6-6z"></path></svg><span class="label">Material:</span> <span class="value">Acetato</span></div>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg><span class="label">Color cristales:</span> <span class="value">Gris (Polarizado)</span></div>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M22 8v10c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V8c0-1.86 1.28-3.41 3-3.86V2h3v2h8V2h3v2.14c1.72.45 3 2 3 3.86zM4 18h16V9.99c0-.01 0-.01 0 0H4v8.01z"></path></svg><span class="label">Calibre:</span> <span class="value">52 20mm</span></div>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path></svg><span class="label">Geofit:</span> <span class="value">Ajuste estándar</span></div>
+      </div>
+
       <div style="margin-top:10px;">
         <button class="btn primary" onclick="agregarAlCarrito({nombre:'Colección Nébula',precioText:'$195.000',precioVal:195000,img:'static/producto8.1.avif'})">Añadir al carrito</button>
         <button class="btn ghost" onclick="alert('Compra inmediata de Nébula')">Comprar ahora</button>
@@ -470,6 +499,18 @@
         <div><strong>Disponibilidad:</strong> En tienda</div>
       </div>
       <p>Pieza icónica de la nueva colección con acabado dorado brillante. Inspirada en la luz y el color del verano.</p>
+
+      <div class="specs-tecnicas">
+        <h4>Especificaciones Técnicas</h4>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M20.41 4.94l-1.35-1.35a4.01 4.01 0 00-5.66 0L4 12.59V17h4.41l8.94-8.94a4.01 4.01 0 002.06-5.12zM6 15v-2.59l7-7L15.59 8 8.59 15H6z"></path></svg><span class="label">Código de modelo:</span> <span class="value">SL4022 9012/A2 48-24</span></div>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path></svg><span class="label">Forma:</span> <span class="value">Redonda</span></div>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-1.22-1.38-2.02-3.11-2.02-5.04 0-3.86 3.14-7 7-7 .92 0 1.76.18 2.52.48.6.23 1.28-.11 1.51-.71.23-.61-.11-1.28-.71-1.51C16.33 3.24 14.23 3 12 3z"></path></svg><span class="label">Color montura:</span> <span class="value">Dorado Brillante</span></div>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M20.5 6.5c-1.38 0-2.5 1.12-2.5 2.5s1.12 2.5 2.5 2.5 2.5-1.12 2.5-2.5-1.12-2.5-2.5-2.5zM3.5 11.5c1.38 0 2.5-1.12 2.5-2.5S4.88 6.5 3.5 6.5 1 7.62 1 9s1.12 2.5 2.5 2.5zM20.5 4c2.48 0 4.5 2.02 4.5 4.5s-2.02 4.5-4.5 4.5-4.5-2.02-4.5-4.5S18.02 4 20.5 4zM3.5 4C1.02 4-1 6.02-1 8.5S1.02 13 3.5 13s4.5-2.02 4.5-4.5S5.98 4 3.5 4zM12 16c-3.31 0-6 2.69-6 6h12c0-3.31-2.69-6-6-6z"></path></svg><span class="label">Material:</span> <span class="value">Metal</span></div>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></svg><span class="label">Color cristales:</span> <span class="value">Ámbar</span></div>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M22 8v10c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V8c0-1.86 1.28-3.41 3-3.86V2h3v2h8V2h3v2.14c1.72.45 3 2 3 3.86zM4 18h16V9.99c0-.01 0-.01 0 0H4v8.01z"></path></svg><span class="label">Calibre:</span> <span class="value">48 24mm</span></div>
+        <div class="spec-item"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"></path></svg><span class="label">Geofit:</span> <span class="value">Ajuste de puente bajo</span></div>
+      </div>
+
       <div style="margin-top:10px;">
         <button class="btn primary" onclick="agregarAlCarrito({nombre:'Colección Sol',precioText:'$230.000',precioVal:230000,img:'static/producto9.1.avif'})">Añadir al carrito</button>
         <button class="btn ghost" onclick="alert('Compra inmediata de Sol')">Comprar ahora</button>
@@ -478,9 +519,6 @@
     </div>
   </div>
 </section>
-
-  <!-- OVERLAY PARA CARRITO EN MÓVIL -->
-  <div id="carrito-overlay" class="carrito-overlay"></div>
 
   <!-- CARRITO LATERAL -->
   <aside id="carrito-panel" class="carrito-panel" aria-hidden="true">
@@ -693,7 +731,6 @@
      * CARRITO
      **********************/
     const carritoPanel = document.getElementById('carrito-panel');
-    const carritoOverlay = document.getElementById('carrito-overlay');
     const carritoItemsEl = document.getElementById('carrito-items');
     const carritoTotalValorEl = document.getElementById('carrito-total-valor');
     const cartIcon = document.getElementById('cart-icon');
@@ -704,18 +741,10 @@
     cartIcon.addEventListener('click', () => {
       carritoPanel.classList.toggle('open');
       carritoPanel.setAttribute('aria-hidden', carritoPanel.classList.contains('open') ? 'false' : 'true');
-      if (carritoOverlay) carritoOverlay.classList.toggle('visible');
     });
     document.getElementById('close-carrito').addEventListener('click', () => {
       carritoPanel.classList.remove('open');
-      if (carritoOverlay) carritoOverlay.classList.remove('visible');
     });
-    // Cerrar también al hacer clic en el overlay
-    if (carritoOverlay) {
-      carritoOverlay.addEventListener('click', () => {
-        document.getElementById('close-carrito').click();
-      });
-    }
 
     // agregar al carrito
     function agregarAlCarrito(item) {
@@ -723,7 +752,6 @@
       renderCarrito();
       // abrir carrito automáticamente
       carritoPanel.classList.add('open');
-      if (carritoOverlay) carritoOverlay.classList.add('visible');
       cartCountBadge.style.display = 'block';
       cartCountBadge.textContent = carrito.length;
     }
@@ -784,7 +812,6 @@
       carrito.length = 0;
       renderCarrito();
       carritoPanel.classList.remove('open');
-      if (carritoOverlay) carritoOverlay.classList.remove('visible');
     });
 
     // helper de seguridad XSS muy simple para nombres
@@ -828,7 +855,7 @@
         if (catalogo) catalogo.style.display = 'grid';
         cerrarZoom();
         carritoPanel.classList.remove('open');
-        if (carritoOverlay) carritoOverlay.classList.remove('visible');
+        document.getElementById('search-bar').classList.remove('visible');
       }
     });
 
@@ -890,6 +917,48 @@
       });
     });
 
+    /**********************
+     * BÚSQUEDA
+     **********************/
+    const searchIcon = document.getElementById('search-icon');
+    const searchBar = document.getElementById('search-bar');
+    const searchInput = document.getElementById('search-input');
+    const closeSearchBtn = document.getElementById('close-search');
+
+    searchIcon.addEventListener('click', () => {
+      searchBar.classList.add('visible');
+      searchInput.focus();
+    });
+
+    closeSearchBtn.addEventListener('click', () => {
+      searchBar.classList.remove('visible');
+      searchInput.value = '';
+      // Resetear filtros y mostrar todos los productos
+      document.querySelectorAll('.producto').forEach(prod => prod.style.display = '');
+    });
+
+    searchInput.addEventListener('input', (e) => {
+      const searchTerm = e.target.value.toLowerCase().trim();
+      document.querySelectorAll('.producto').forEach(prod => {
+        const nombre = prod.querySelector('h3')?.textContent.toLowerCase() || '';
+        const categoria = prod.dataset.category?.toLowerCase() || '';
+        const isVisible = nombre.includes(searchTerm) || categoria.includes(searchTerm);
+        prod.style.display = isVisible ? '' : 'none';
+      });
+    });
+
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault(); // Evita cualquier acción por defecto del Enter
+        // Encuentra los productos que están actualmente visibles
+        const visibleProducts = Array.from(document.querySelectorAll('.producto')).filter(p => p.style.display !== 'none');
+        // Si hay exactamente un resultado, abre su detalle
+        if (visibleProducts.length === 1) {
+          visibleProducts[0].click(); // Simula un clic para abrir el detalle
+          closeSearchBtn.click(); // Cierra la barra de búsqueda
+        }
+      }
+    });
     // END script
   </script>
 
