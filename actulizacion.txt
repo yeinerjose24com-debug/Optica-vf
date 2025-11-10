@@ -1,0 +1,4 @@
+cada nuevo ajuste o añadido al modelo, para que este se suba a GitHub se debe ejecutar los siguientes comandos uno po uno  en el cmd del proyecto.
+git add .
+git commit -m "Agregadas nuevas funciones e imágenes"
+git push origin main
