@@ -533,7 +533,7 @@
 
       <div style="margin-top:10px;">
         <button class="btn primary" onclick="agregarAlCarrito({nombre:'Colección Aurora',precioText:'$210.000',precioVal:210000,img:'static/producto7.1.avif'})">Añadir al carrito</button>
-        <button class="btn ghost" onclick="mostrarModalCompra()">Comprar ahora</button>
+        <button class="btn ghost" onclick="mostrarModalCompra(); iniciarSeguimiento();">Comprar ahora</button>
       </div>
       <button class="volver" onclick="volverCatalogo('detalle-aurora')">Volver al catálogo</button>
     </div>
@@ -573,7 +573,7 @@
 
       <div style="margin-top:10px;">
         <button class="btn primary" onclick="agregarAlCarrito({nombre:'Colección Nébula',precioText:'$195.000',precioVal:195000,img:'static/producto8.1.avif'})">Añadir al carrito</button>
-        <button class="btn ghost" onclick="mostrarModalCompra()">Comprar ahora</button>
+        <button class="btn ghost" onclick="mostrarModalCompra(); iniciarSeguimiento();">Comprar ahora</button>
       </div>
       <button class="volver" onclick="volverCatalogo('detalle-nebula')">Volver al catálogo</button>
     </div>
@@ -613,7 +613,7 @@
 
       <div style="margin-top:10px;">
         <button class="btn primary" onclick="agregarAlCarrito({nombre:'Colección Sol',precioText:'$230.000',precioVal:230000,img:'static/producto9.1.avif'})">Añadir al carrito</button>
-        <button class="btn ghost" onclick="mostrarModalCompra()">Comprar ahora</button>
+        <button class="btn ghost" onclick="mostrarModalCompra(); iniciarSeguimiento();">Comprar ahora</button>
       </div>
       <button class="volver" onclick="volverCatalogo('detalle-sol')">Volver al catálogo</button>
     </div>
@@ -881,7 +881,10 @@
 
       // comprar ahora
       const btnBuy = document.getElementById('btn-buy');
-      if (btnBuy) btnBuy.onclick = () => { mostrarModalCompra(); };
+      if (btnBuy) btnBuy.onclick = () => { 
+        mostrarModalCompra(); 
+        iniciarSeguimiento();
+      };
     }
 
     // Conectar botón "Volver al catálogo" del detalle compartido
